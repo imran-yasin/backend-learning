@@ -2,7 +2,7 @@ import "reflect-metadata";
 import express, { Request, Response, NextFunction } from "express";
 import datasource from "./datasource/dataSource";
 import { Sector } from "./entities/Sectors.entity";
-
+import authRoutes from "./authRoutes";
 const PORT = 8000;
 const app = express();
 
@@ -24,7 +24,11 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   res.status(500).send("Something broke!");
 });
 
+// app.use("/", (req: Request, res: Response) => {
+//   res.send("Hello World");
+// });
 
+app.use("/auth", authRoutes);
 
 // Route to get all sectors
 app.get("/sectors", async (req: Request, res: Response) => {
@@ -85,7 +89,7 @@ app.post("/sector", async (req: Request, res: Response) => {
 // Route to update a sector
 app.patch("/sector/:id", async (req: Request, res: Response) => {
   try {
-    const id: string = req.params.id; 
+    const id: string = req.params.id;
 
     const sectorRepository = datasource.getRepository(Sector);
     const sector = await sectorRepository.findOne({ where: { id } });
